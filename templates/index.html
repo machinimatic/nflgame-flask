@@ -65,6 +65,7 @@
                 </select>
                 <input type="text" id="playerName">
             </form>
+            <div id="player_info"></div>
         </div>
 	</body>
     <script>
@@ -73,29 +74,43 @@
             var year = $("#year_select").val();
             var week = $("#week_select").val();
 
+            // Fuzzy player search by first or last name with autocomplete
             $("#playerName").autocomplete({
                 source: function(request, response) {
-                    console.log(year);
-                    console.log(season_type);
-                    console.log(week);
+                    season_type = $("#season_type_select").val();
+                    year = $("#year_select").val();
+                    week = $("#week_select").val();
                     $.getJSON($SCRIPT_ROOT + "/_search_by_year/" + year + "/" + season_type + "/" + week, {
                         name: request.term
                     }, function(data) {
-                        console.log(data);
                         console.log(data.matching_results);
                         response(data.matching_results);
                     });
                 },
                 minLength: 2,
                 select: function(event, ui) {
-                    console.log(ui.item.value);
+                    $.get($SCRIPT_ROOT + "/_render_player_info", {
+                        name: ui.item.value,
+                        birthdate: ui.item.birthdate,
+                        college: ui.item.college,
+                        profile_url: ui.item.profile_url,
+                        team: ui.item.team,
+                        uniform_number: ui.item.uniform_number,
+                        weight: ui.item.weight,
+                        years_pro: ui.item.years_pro
+                    }, function(data) {
+                        $("#player_info").html(data); 
+                    });
+                    console.log(ui.item);
                     console.log(ui.item.id);
                 }
             });
         
+            // Toggle select options based on season phase
             var preseasonFormat = $("#preseason").remove();
             var regularSeasonFormat = $("#regular").remove();
             var postseasonFormat = $("#postseason").remove();
+
             function toggleFields() {
                 season_type = $("#season_type_select").val();
                 $("#week_select optgroup").remove();
@@ -113,6 +128,7 @@
 
             $("#season_type_select").on("change", toggleFields);
 
+            // Run the function on document.ready to select an initial option
             toggleFields();
         });
     </script>
