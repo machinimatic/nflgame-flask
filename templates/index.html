@@ -7,6 +7,8 @@
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         <script type="text/javascript">
             $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
         </script>
@@ -25,17 +27,58 @@
                     <option value="2015">2015</option>
                     <option value="2016" selected>2016</option>
                 </select>
+                <select id="season_type_select">
+                    <option value="Preseason">Preseason</option>
+                    <option value="Regular" selected>Regular</option>
+                    <option value="Postseason">Postseason</option>
+                </select>
+                <select id="week_select">
+                    <optgroup id="preseason" label="Preseason">
+                        <option value="1" selected>Week 1</option>
+                        <option value="2">Week 2</option>
+                        <option value="3">Week 3</option>
+                        <option value="4">Week 4</option>
+                    </optgroup>
+                    <optgroup id="regular" label="Regular Season">
+                        <option value="1" selected>Week 1</option>
+                        <option value="2">Week 2</option>
+                        <option value="3">Week 3</option>
+                        <option value="4">Week 4</option>
+                        <option value="5">Week 5</option>
+                        <option value="6">Week 6</option>
+                        <option value="7">Week 7</option>
+                        <option value="8">Week 8</option>
+                        <option value="9">Week 9</option>
+                        <option value="10">Week 10</option>
+                        <option value="11">Week 11</option>
+                        <option value="12">Week 12</option>
+                        <option value="13">Week 13</option>
+                        <option value="14">Week 14</option>
+                        <option value="15">Week 15</option>
+                        <option value="16">Week 16</option>
+                    </optgroup>
+                    <optgroup id="postseason" label="Preseason">
+                        <option value="1" selected>Conference Championship</option>
+                        <option value="2">Division Championship</option>
+                        <option value="3">Super Bowl</option>
+                    </optgroup>
+                </select>
                 <input type="text" id="playerName">
             </form>
         </div>
 	</body>
     <script>
-        $(function() {
+        $(document).ready(function() {
+            var season_type = $("#season_type_select").val();
+            var year = $("#year_select").val();
+            var week = $("#week_select").val();
+
             $("#playerName").autocomplete({
                 source: function(request, response) {
-                    var year = $("#year_select").val();
                     console.log(year);
-                    $.getJSON($SCRIPT_ROOT + "/_search_by_year/" + year, {
+                    console.log(season_type);
+                    console.log(week);
+                    $.getJSON($SCRIPT_ROOT + "/_search_by_year/" + year + "/" + season_type + "/" + week, {
                         name: request.term
                     }, function(data) {
                         console.log(data);
@@ -49,6 +92,28 @@
                     console.log(ui.item.id);
                 }
             });
+        
+            var preseasonFormat = $("#preseason").remove();
+            var regularSeasonFormat = $("#regular").remove();
+            var postseasonFormat = $("#postseason").remove();
+            function toggleFields() {
+                season_type = $("#season_type_select").val();
+                $("#week_select optgroup").remove();
+
+                if (season_type == "Preseason") {
+                    $("#week_select").append(preseasonFormat);
+                }
+                if (season_type == "Regular") {
+                    $("#week_select").append(regularSeasonFormat);
+                }
+                if (season_type == "Postseason") {
+                    $("#week_select").append(postseasonFormat);
+                }
+            }
+
+            $("#season_type_select").on("change", toggleFields);
+
+            toggleFields();
         });
     </script>
 </html>

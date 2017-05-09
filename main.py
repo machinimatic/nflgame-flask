@@ -13,14 +13,15 @@ db = nfldb.connect()
 def index():
     return render_template('index.html')
 
-@app.route("/_search_by_year/<year>")
-def search_year(year):
+@app.route("/_search_by_year/<season_year>/<season_type>/<season_week>")
+def search_year(season_year, season_type, season_week):
     q = nfldb.Query(db)
 
     name = request.args.get('name')
-    year = int(year)
+    year = int(season_year)
+    week = int(season_week)
 
-    q.game(season_year=year, season_type='Regular', week=1)
+    q.game(season_year=year, season_type=season_type, week=week)
     games = q.as_players()
     player_list = []
     for player in games:
