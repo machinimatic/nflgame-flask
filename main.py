@@ -35,7 +35,7 @@ def render_player_stats(player_id):
 @app.route("/_search_player")
 def search_player():
     name = request.args.get('name')
-    
+
     player_list = []
 
     player, dist = nfldb.player_search(db, name)
