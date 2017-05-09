@@ -1,0 +1,72 @@
+<html>
+	<head>
+        <meta charset="utf-8" />
+		<title>Index</title>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <script type="text/javascript">
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        </script>
+	</head>
+	<body>
+        <div class="ui-widget container">
+        <h2>{{ player.full_name }}</h2>
+        <h3>{{ player.team }} #{{ player.uniform_number }}</h3>
+        {{ player.gsis_name}}
+        {{ player.birthdate }}
+        {{ player.college }}
+        <a href="{{ player.profile_url }}">Profile</a>
+        {{ player.weight }}
+        {{ player.years_pro }}
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    {% for stat in stats %}
+                    <th>{{ stat }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ stats.passing_incmp_air_yds }}</td>
+                    <td>{{ stats.fumbles_tot }}</td>
+                    <td>{{ stats.passing_att }}</td>
+                    <td>{{ stats.fumbles_oob }}</td>
+                    <td>{{ stats.passing_yds }}</td>
+                    <td>{{ stats.defense_tkl }}</td>
+                    <td>{{ stats.passing_twoptmissed }}</td>
+                    <td>{{ stats.rushing_yds }}</td>
+                    <td>{{ stats.passing_cmp_air_yds }}</td>
+                    <td>{{ stats.passing_sk_yds }}</td>
+                    <td>{{ stats.fumbles_forced }}</td>
+                    <td>{{ stats.fumbles_lost }}</td>
+                    <td>{{ stats.passing_int }}</td>
+                    <td>{{ stats.rushing_tds }}</td>
+                    <td>{{ stats.receiving_yac_yds }}</td>
+                    <td>{{ stats.fumbles_notforced }}</td>
+                    <td>{{ stats.receiving_rec }}</td>
+                    <td>{{ stats.receiving_yds }}</td>
+                    <td>{{ stats.rushing_att }}</td>
+                    <td>{{ stats.receiving_tar }}</td>
+                    <td>{{ stats.punting_i20 }}</td>
+                    <td>{{ stats.passing_sk }}</td>
+                    <td>{{ stats.passing_twoptm }}</td>
+                    <td>{{ stats.passing_twopta }}</td>
+                    <td>{{ stats.passing_cmp }}</td>
+                    <td>{{ stats.punting_yds }}</td>
+                    <td>{{ stats.fumbles_rec }}</td>
+                    <td>{{ stats.passing_incmp }}</td>
+                    <td>{{ stats.fumbles_rec_yds }}</td>
+                    <td>{{ stats.passing_tds }}</td>
+                    <td>{{ stats.punting_tot }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

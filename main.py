@@ -1,6 +1,7 @@
 import json
 import nflgame
 import nfldb
+import pprint
 import requests
 import sys
 from flask import Flask, request, jsonify
@@ -13,55 +14,38 @@ db = nfldb.connect()
 def index():
     return render_template('index.html')
 
-@app.route("/_render_player_info")
-def render_player_info():
+@app.route("/player/<player_id>")
+def render_player_info(player_id):
+    player = nfldb.Player.from_id(db, player_id)
+    q = nfldb.Query(db).game()
+    q.player(gsis_name=player.gsis_name, team=player.team)
+    stats = q.as_aggregate()
+
+    stat_list = {}
+    for stat in stats:
+        for field in stat.fields:
+            stat_list[field] = getattr(stat, field)
+
+    return render_template('player.html', player=player, stats=stat_list)
+
+@app.route("/_render_player_stats/<player_id>")
+def render_player_stats(player_id):
+    pass
+
+@app.route("/_search_player")
+def search_player():
     name = request.args.get('name')
-    birthdate = request.args.get('birthdate')
-    college = request.args.get('college')
-    profile_url = request.args.get('profile_url')
-    team = request.args.get('team')
-    uniform_number = request.args.get('uniform_number')
-    weight = request.args.get('weight')
-    years_pro = request.args.get('years_pro')
-    return render_template('player_info.html',
-            name=name,
-            birthdate=birthdate,
-            college=college,
-            profile_url=profile_url,
-            team=team,
-            uniform_number=uniform_number,
-            weight=weight,
-            years_pro=years_pro)
-
-@app.route("/_search_by_year/<season_year>/<season_type>/<season_week>")
-def search_year(season_year, season_type, season_week):
-    q = nfldb.Query(db)
-
-    name = request.args.get('name')
-    year = int(season_year)
-    week = int(season_week)
-
-    q.game(season_year=year, season_type=season_type, week=week)
-    games = q.as_players()
+    
     player_list = []
-    for player in games:
-        print dir(player)
-        if player.first_name.lower().startswith(name) or player.last_name.lower().startswith(name):
-            data = {
-                    'label': player.full_name,
-                    'value': player.full_name,
-                    'id': player.player_id,
-                    'first_name': player.first_name,
-                    'last_name': player.last_name,
-                    'birthdate': player.birthdate,
-                    'college': player.college,
-                    'profile_url': player.profile_url,
-                    'team': player.team,
-                    'uniform_number': player.uniform_number,
-                    'weight': player.weight,
-                    'years_pro': player.years_pro
-                    }
-            player_list.append(data)
+
+    player, dist = nfldb.player_search(db, name)
+    data = {
+            'label': player.full_name,
+            'value': player.full_name,
+            'id': player.player_id,
+            }
+    player_list.append(data)
+
     return jsonify(matching_results=player_list)
 
 if __name__ == "__main__":
