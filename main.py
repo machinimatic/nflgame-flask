@@ -17,6 +17,7 @@ def index():
 @app.route("/player/<player_id>")
 def render_player_info(player_id):
     player = nfldb.Player.from_id(db, player_id)
+
     q = nfldb.Query(db).game()
     q.player(gsis_name=player.gsis_name, team=player.team)
     stats = q.as_aggregate()
@@ -40,7 +41,7 @@ def search_player():
 
     player, dist = nfldb.player_search(db, name)
     data = {
-            'label': player.full_name,
+            'label': player.full_name + " (" + player.team + ", " + str(player.position) + ")",
             'value': player.full_name,
             'id': player.player_id,
             }
