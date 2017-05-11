@@ -40,8 +40,18 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="~/nflgame-flask"
+#########################################
+#########################################
+#########################################
+# Replace this with path to application #
+#########################################
+#########################################
+#########################################
+VIRTUAL_ENV="/path/to/nflgame-flask"
 export VIRTUAL_ENV
+#########################################
+#########################################
+#########################################
 
 _OLD_VIRTUAL_PATH="$PATH"
 PATH="$VIRTUAL_ENV/bin:$PATH"

@@ -2,4 +2,5 @@
 env.sh
 *.pyc
 app.settings
+bin/activate
 lib/python2.7/site-packages/nflgame/gamecenter-json/*.json.gz
