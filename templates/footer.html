@@ -12,20 +12,18 @@
                 minLength: 2,
                 select: function(event, ui) {
                     $("#playerId").val(ui.item.id);
-                    $("#search").attr("disabled", false);
                 }
             });
 
             $("#search").click(function() {
                 $("#playerSearch").submit(function(event) {
-                    var year = $("#year_select").val();
-                    var phase = $("#phase_select").val();
-                    var week = $("week_select").val();
-                    console.log(year + ", " + phase + ", " + week);
+                    var year = $("#year_select").val() == "All" ? "/0" : "/" + $("#year_select").val();
+                    var phase = $("#phase_select").val() == "All" ? "/0" : "/" + $("#phase_select").val();
+                    var week = $("#week_select").val() == "All" ? "/0" : "/" + $("#week_select").val();
 
                     var url = window.location.protocol + "//" + window.location.host + "/";
                     var page = "player/";
-                    var params = $("#playerId").val();
+                    var params = $("#playerId").val() + year + phase + week;
                     var dest = url + page + params;
 
                     event.preventDefault();
@@ -34,12 +32,13 @@
             });
 
             // Toggle select options based on season phase
+            var allSeasonsFormat = $("#allseasons").remove();
             var preseasonFormat = $("#preseason").remove();
             var regularSeasonFormat = $("#regular").remove();
             var postseasonFormat = $("#postseason").remove();
 
             function toggleFields() {
-                season_type = $("#season_type_select").val();
+                season_type = $("#phase_select").val();
                 $("#week_select optgroup").remove();
 
                 if (season_type == "Preseason") {
@@ -51,9 +50,12 @@
                 if (season_type == "Postseason") {
                     $("#week_select").append(postseasonFormat);
                 }
+                if (season_type == "All") {
+                    $("#week_select").append(allSeasonsFormat);
+                }
             }
 
-            $("#season_type_select").on("change", toggleFields);
+            $("#phase_select").on("change", toggleFields);
 
             // Run the function on document.ready to select an initial option
             toggleFields();

@@ -18,34 +18,34 @@
         <form id="playerSearch">
             <input type="text" id="playerName" placeholder="Player Name">
             <input type="hidden" id="playerId">
-            <select id="year_select">
+                <select id="year_select">
                     <option value="2009">2009</option>
                     <option value="2010">2010</option>
                     <option value="2011">2011</option>
                     <option value="2012">2012</option>
                     <option value="2013">2013</option>
-                    <option value="2013">2013</option>
                     <option value="2014">2014</option>
                     <option value="2015">2015</option>
                     <option value="2016" selected>2016</option>
+                    <option value="All">All Years</option>
                 </select>
                 <select id="phase_select">
-                    <option value="All">All</option>
+                    <option value="All">Full Season</option>
                     <option value="Preseason">Preseason</option>
                     <option value="Regular" selected>Regular</option>
                     <option value="Postseason">Postseason</option>
                 </select>
                 <select id="week_select">
                     <optgroup id="preseason" label="Preseason">
-                        <option value="0" selected>All</option>
+                        <option value="All" selected>All Weeks</option>
                         <option value="1">Week 1</option>
                         <option value="2">Week 2</option>
                         <option value="3">Week 3</option>
                         <option value="4">Week 4</option>
                     </optgroup>
                     <optgroup id="regular" label="Regular Season">
-                        <option value="0" selected>All</option>
-                        <option value="1" selected>Week 1</option>
+                        <option value="All" selected>All Weeks</option>
+                        <option value="1">Week 1</option>
                         <option value="2">Week 2</option>
                         <option value="3">Week 3</option>
                         <option value="4">Week 4</option>
@@ -64,15 +64,62 @@
                         <option value="17">Week 17</option>
                     </optgroup>
                     <optgroup id="postseason" label="Postseason">
-                        <option value="0" selected>All</option>
+                        <option value="All" selected>All Weeks</option>
                         <option value="1">Wildcard Round</option>
                         <option value="2">Division Championship</option>
                         <option value="3">Conference Championship</option>
                         <option value="4">Super Bowl</option>
                     </optgroup>
+                    <optgroup id="allseasons" label="All">
+                        <option value="All" selected>All</option>
+                    </optgroup>
                 </select>
-                <button id="search" disabled>Search</button>
+                <button id="search">Search</button>
         </form>
         <div id="player_info"></div>
     </div>
+
+    <script>
+        var prev_player_id = "{{ session['prev_player_id'] }}";
+        console.log(prev_player_id);
+        if (prev_player_id != null) {
+            $("#playerId").val(prev_player_id);
+        }
+
+        var prev_player_name = "{{ session['prev_player_name'] }}";
+        console.log(prev_player_name);
+        if (prev_player_name != null) {
+            $("#playerName").val(prev_player_name);
+        }
+
+        var prev_week = "{{ session['prev_week'] }}";
+        console.log(prev_week);
+        if (prev_week != null) {
+            if (prev_week != 0) {
+                $("#week_select").val(prev_week);
+            } else {
+                $("#week_select").val("All");
+            }
+        }
+
+        var prev_phase = "{{ session['prev_phase'] }}";
+        console.log(prev_phase);
+        if (prev_phase != null) {
+            if (prev_phase != "0") {
+                $("#phase_select").val(prev_phase);
+            } else {
+                $("#phase_select").val("All");
+            }
+        }
+
+        var prev_year = {{ session['prev_year'] }};
+        console.log(prev_year);
+        if (prev_year != null) {
+            if (prev_year != 0) {
+                $("#year_select").val(prev_year);
+            } else {
+                $("#year_select").val("All");
+            }
+        }
+    </script>
 <body>
