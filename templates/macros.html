@@ -1,0 +1,21 @@
+{% macro stat_table(stat_type) -%}
+	<thead>
+		<tr>
+			{% for stat in stats.items() %}
+			{% if stat[0].startswith(stat_type) %}
+			<th>{{ stat_names[stat[0]|string] }}</th>
+			{% endif %}
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			{% for stat in stats.items() %}
+			{% if stat[0].startswith(stat_type) %}
+            <td>{{ "{0:,}".format(stat[1]) }}</td>
+			{% endif %}
+			{% endfor %}
+		</tr>
+	</tbody>
+{%- endmacro %}
+

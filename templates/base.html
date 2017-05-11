@@ -35,7 +35,7 @@
                 },
                 minLength: 2,
                 select: function(event, ui) {
-                    var url = window.location.href;
+                    var url = window.location.protocol + "//" + window.location.host + "/";
                     window.location = url + "player/" + ui.item.id;
                 }
             });
