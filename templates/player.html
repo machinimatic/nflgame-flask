@@ -1,4 +1,4 @@
-{% include "base.html" %}
+{% include "header.html" %}
 {% from 'macros.html' import stat_table with context %}
 
 <div class="ui-widget container">
@@ -23,5 +23,6 @@
         {{ stat_table("xp") }}
         {{ stat_table("timeout") }}
     </table>
-
 </div>
+
+{% include "footer.html" %}

@@ -12,7 +12,7 @@ db = nfldb.connect()
 
 @app.route("/")
 def index():
-    return render_template('base.html')
+    return render_template('header.html')
 
 @app.route("/player/<player_id>")
 @app.route("/player/<player_id>/<int:year>")
