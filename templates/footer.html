@@ -1,108 +1,89 @@
-    <script>
-        $(document).ready(function() {
-            // Fuzzy player search with autocomplete
-            $("#playerName").autocomplete({
-                source: function(request, response) {
-                    $.getJSON($SCRIPT_ROOT + "/_search_player", {
-                        name: request.term
-                    }, function(data) {
-                        response(data.matching_results);
-                    });
-                },
-                minLength: 2,
-                select: function(event, ui) {
-                    $("#playerId").val(ui.item.id);
-                }
-            });
+<script>
+    function popSessionValues() {
+        var prev_player_id = "{{ session['prev_player_id'] }}";
+        if (prev_player_id != null) {
+            $("#playerId").val(prev_player_id);
+        }
 
-            $("#search").click(function() {
-                $("#playerSearch").submit(function(event) {
-                    var year = $("#year_select").val() == "All" ? "/0" : "/" + $("#year_select").val();
-                    var phase = $("#phase_select").val() == "All" ? "/0" : "/" + $("#phase_select").val();
-                    var week = $("#week_select").val() == "All" ? "/0" : "/" + $("#week_select").val();
+        var prev_player_name = "{{ session['prev_player_name'] }}";
+        if (prev_player_name != null) {
+            $("#playerName").val(prev_player_name);
+        }
 
-                    var url = window.location.protocol + "//" + window.location.host + "/";
-                    var page = "player/";
-                    var params = $("#playerId").val() + year + phase + week;
-                    var dest = url + page + params;
+        var prev_year = "{{ session['prev_year'] }}";
+        if (prev_year != null) {
+            if (prev_year != 0) {
+                $("#year_select").val(prev_year);
+            } else {
+                $("#year_select").val("All");
+            }
+        }
 
-                    event.preventDefault();
-                    window.location.href = dest;
+        var prev_phase = "{{ session['prev_phase'] }}";
+        if (prev_phase != null) {
+            if (prev_phase != "0") {
+                $("#phase_select").val(prev_phase);
+            } else {
+                $("#phase_select").val("All");
+            }
+        }
+
+        var prev_week = "{{ session['prev_week'] }}";
+        if (prev_week != null) {
+            if (prev_week != 0) {
+                $("#week_select").val(prev_week);
+            } else {
+                $("#week_select").val("All");
+            }
+        }
+    }
+
+    $(document).ready(function() {
+        // Fuzzy player search with autocomplete
+        $("#playerName").autocomplete({
+            source: function(request, response) {
+                $.getJSON($SCRIPT_ROOT + "/_search_player", {
+                    name: request.term
+                }, function(data) {
+                    response(data.matching_results);
                 });
-            });
-
-            // Toggle select options based on season phase
-            var allSeasonsFormat = $("#allseasons").remove();
-            var preseasonFormat = $("#preseason").remove();
-            var regularSeasonFormat = $("#regular").remove();
-            var postseasonFormat = $("#postseason").remove();
-
-            function toggleFields() {
-                season_type = $("#phase_select").val();
-                $("#week_select optgroup").remove();
-
-                if (season_type == "Preseason") {
-                    $("#week_select").append(preseasonFormat);
-                }
-                if (season_type == "Regular") {
-                    $("#week_select").append(regularSeasonFormat);
-                }
-                if (season_type == "Postseason") {
-                    $("#week_select").append(postseasonFormat);
-                }
-                if (season_type == "All") {
-                    $("#week_select").append(allSeasonsFormat);
-                }
+            },
+            minLength: 2,
+            select: function(event, ui) {
+                $("#playerId").val(ui.item.id);
             }
-            $("#phase_select").on("change", toggleFields);
-
-            function popSessionValues() {
-                var prev_player_id = "{{ session['prev_player_id'] }}";
-                if (prev_player_id != null) {
-                    $("#playerId").val(prev_player_id);
-                }
-
-                var prev_player_name = "{{ session['prev_player_name'] }}";
-                if (prev_player_name != null) {
-                    $("#playerName").val(prev_player_name);
-                }
-
-                var prev_week = {{ session['prev_week'] }};
-                if (prev_week != null) {
-                    if (prev_week != 0) {
-                        $("#week_select").val(prev_week);
-                    } else {
-                        $("#week_select").val("All");
-                    }
-                }
-
-                var prev_phase = "{{ session['prev_phase'] }}";
-                if (prev_phase != null) {
-                    if (prev_phase != "0") {
-                        $("#phase_select").val(prev_phase);
-                    } else {
-                        $("#phase_select").val("All");
-                    }
-                }
-
-                var prev_year = {{ session['prev_year'] }};
-                if (prev_year != null) {
-                    if (prev_year != 0) {
-                        $("#year_select").val(prev_year);
-                    } else {
-                        $("#year_select").val("All");
-                    }
-                }
-            }
-
-            // Run the function on document.ready to select an initial option
-            toggleFields();
-
-            // Pop our previous session values into the form
-            popSessionValues();
         });
 
+        $("#week_select_all").change(function() {
+            if ($(this).is(':checked') == true) {
+                $("#week_select").attr("disabled", true);
+                $("#week_select").val("All");
+            } else {
+                $("#week_select").attr('disabled', false);
+            }
+        });
+        
+        // Build a URL from our form values
+        $("#search").click(function() {
+            $("#playerSearch").submit(function(event) {
+                var year = $("#year_select").val() == "All" ? "/0" : "/" + $("#year_select").val();
+                var phase = $("#phase_select").val() == "All" ? "/0" : "/" + $("#phase_select").val();
+                var week = ($("#week_select_all").is(':checked') || $("#week_select").val() == "All") ? "/0" : "/" + $("#week_select").val();
+
+                var url = window.location.protocol + "//" + window.location.host + "/";
+                var page = "player/";
+                var params = $("#playerId").val() + year + phase + week;
+                var dest = url + page + params;
+
+                event.preventDefault();
+                window.location.href = dest;
+            });
+        });
+
+        popSessionValues();
+    });
     </script>
+
 </body>
 </html>
 
