@@ -10,3 +10,12 @@ body {
 	color: black;
 }
 
+#week_select_chkbx {
+    margin-top: 26px;
+    margin-left: -17px;
+}
+
+#search {
+    margin-top: 26px;
+    height: 34px;
+}
